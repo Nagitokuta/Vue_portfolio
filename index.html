@@ -3,36 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>オンラインポートフォリオ</title>
+    <title>オンラインポートフォリオ - コンポーネント版</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <h1 class="title">オンラインポートフォリオ</h1>
-        <p class="subtitle">あなたのプロジェクトや実績をまとめてみよう！</p>
-      </header>
-
-      <main class="main-content">
-        <div class="welcome-section">
-          <p class="description">
-            このアプリでは、あなたの作品やプロジェクトを簡単に整理して、
-            美しいポートフォリオサイトを作成できます。
-          </p>
-          <div class="button-group">
-            <button id="loginBtn" class="btn btn-primary">ログイン</button>
-            <button id="signupBtn" class="btn btn-secondary">
-              アカウント作成
-            </button>
-          </div>
-        </div>
-      </main>
-
-      <footer class="footer">
-        <p>&copy; 2024 オンラインポートフォリオ</p>
-      </footer>
+    <div id="app">
+      <!-- Vueアプリケーションがここに表示される -->
     </div>
 
+    <!-- Vue.js本体 -->
+    <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.js"></script>
+
+    <!-- コンポーネントファイル -->
+    <script src="js/components/Login.js"></script>
+    <script src="js/components/Register.js"></script>
+    <script src="js/components/Dashboard.js"></script>
+    <script src="js/components/ProjectForm.js"></script>
+
+    <!-- メインアプリケーション -->
     <script src="js/main.js"></script>
   </body>
 </html>

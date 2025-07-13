@@ -1,103 +1,109 @@
-// DOM読み込み完了後に実行
-document.addEventListener("DOMContentLoaded", function () {
-  // ボタン要素を取得
-  const loginBtn = document.getElementById("loginBtn");
-  const signupBtn = document.getElementById("signupBtn");
+const { createApp } = Vue;
 
-  // ログインボタンのクリックイベント
-  loginBtn.addEventListener("click", function () {
-    showMessage("ログイン機能は次のステップで実装します！", "info");
-  });
+const App = {
+  components: {
+    Login,
+    Register,
+    Dashboard,
+    ProjectForm,
+  },
 
-  // アカウント作成ボタンのクリックイベント
-  signupBtn.addEventListener("click", function () {
-    showMessage("アカウント作成機能は次のステップで実装します！", "info");
-  });
+  data() {
+    return {
+      currentView: "login", // 現在表示中の画面
+      currentUser: null,
+      projects: [
+        // サンプルデータ
+        {
+          id: 1,
+          title: "Webサイト制作",
+          start: "2024-01-01",
+          end: "2024-03-31",
+          summary: "企業のコーポレートサイトを制作",
+          details:
+            "HTML、CSS、JavaScriptを使用してレスポンシブなWebサイトを制作しました。",
+          role: "フロントエンド開発担当",
+        },
+      ],
+      editingProject: null,
+    };
+  },
 
-  // ページ読み込み時のアニメーション
-  animateWelcomeSection();
-});
+  template: `
+    <div class="app-container">
+      <!-- ログイン画面 -->
+      <Login 
+        v-if="currentView === 'login'"
+        @login="handleLogin"
+        @toRegister="currentView = 'register'"
+      />
+      
+      <!-- アカウント作成画面 -->
+      <Register 
+        v-if="currentView === 'register'"
+        @register="handleRegister"
+        @toLogin="currentView = 'login'"
+      />
+      
+      <!-- ダッシュボード -->
+      <Dashboard 
+        v-if="currentView === 'dashboard'"
+        :username="currentUser?.username"
+        :projects="projects"
+        @addProject="showProjectForm()"
+        @editProject="showProjectForm"
+        @deleteProject="deleteProject"
+      />
+      
+      <!-- プロジェクト追加・編集フォーム -->
+      <ProjectForm 
+        v-if="currentView === 'projectForm'"
+        :project="editingProject"
+        @save="saveProject"
+        @cancel="currentView = 'dashboard'"
+      />
+    </div>
+  `,
 
-// メッセージ表示関数
-function showMessage(message, type = "info") {
-  // 既存のメッセージがあれば削除
-  const existingMessage = document.querySelector(".message");
-  if (existingMessage) {
-    existingMessage.remove();
-  }
+  methods: {
+    handleLogin(credentials) {
+      // 簡易的なログイン処理
+      this.currentUser = { username: credentials.username };
+      this.currentView = "dashboard";
+    },
 
-  // メッセージ要素を作成
-  const messageDiv = document.createElement("div");
-  messageDiv.className = `message message-${type}`;
-  messageDiv.textContent = message;
+    handleRegister(userData) {
+      // 簡易的な登録処理
+      this.currentUser = { username: userData.username };
+      this.currentView = "dashboard";
+    },
 
-  // スタイルを適用
-  messageDiv.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === "info" ? "#3498db" : "#e74c3c"};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 5px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1000;
-        animation: slideIn 0.3s ease-out;
-    `;
+    showProjectForm(project = null) {
+      this.editingProject = project;
+      this.currentView = "projectForm";
+    },
 
-  // ページに追加
-  document.body.appendChild(messageDiv);
-
-  // 3秒後に自動削除
-  setTimeout(() => {
-    if (messageDiv.parentNode) {
-      messageDiv.style.animation = "slideOut 0.3s ease-in";
-      setTimeout(() => {
-        messageDiv.remove();
-      }, 300);
-    }
-  }, 3000);
-}
-
-// ウェルカムセクションのアニメーション
-function animateWelcomeSection() {
-  const welcomeSection = document.querySelector(".welcome-section");
-
-  // 初期状態を設定
-  welcomeSection.style.opacity = "0";
-  welcomeSection.style.transform = "translateY(30px)";
-
-  // アニメーション実行
-  setTimeout(() => {
-    welcomeSection.style.transition = "all 0.8s ease-out";
-    welcomeSection.style.opacity = "1";
-    welcomeSection.style.transform = "translateY(0)";
-  }, 100);
-}
-
-// CSSアニメーションを追加
-const style = document.createElement("style");
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
+    saveProject(projectData) {
+      if (this.editingProject) {
+        // 編集の場合
+        const index = this.projects.findIndex((p) => p.id === projectData.id);
+        if (index !== -1) {
+          this.projects[index] = projectData;
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
+      } else {
+        // 新規追加の場合
+        this.projects.push(projectData);
+      }
+
+      this.editingProject = null;
+      this.currentView = "dashboard";
+    },
+
+    deleteProject(projectId) {
+      this.projects = this.projects.filter((p) => p.id !== projectId);
+    },
+  },
+};
+
+// アプリケーションをマウント
+createApp(App).mount("#app");
