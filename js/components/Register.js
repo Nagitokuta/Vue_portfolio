@@ -51,7 +51,7 @@ const Register = {
           
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">作成</button>
-            <button type="button" @click="$emit('toLogin')" class="btn btn-secondary">
+            <button type="button" @click="goToLogin" class="btn btn-secondary">
               戻る
             </button>
           </div>
@@ -102,15 +102,16 @@ const Register = {
 
       // 成功処理
       this.error = "";
-      this.success = "アカウントが作成されました！";
+      this.success =
+        "アカウントが作成されました！ダッシュボードに移動します...";
 
       setTimeout(() => {
-        this.$emit("register", {
-          username: this.username,
-          email: this.email,
-          password: this.password,
-        });
+        this.$router.push("/dashboard");
       }, 1500);
+    },
+
+    goToLogin() {
+      this.$router.push("/login");
     },
   },
 };

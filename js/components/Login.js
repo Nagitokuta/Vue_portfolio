@@ -11,7 +11,7 @@ const Login = {
             <input 
               v-model="username" 
               type="text" 
-              placeholder="ユーザー名を入力"
+              placeholder="ユーザー名を入力（demo）"
               required 
               class="form-input"
             />
@@ -22,7 +22,7 @@ const Login = {
             <input 
               v-model="password" 
               type="password" 
-              placeholder="パスワードを入力"
+              placeholder="パスワードを入力（password）"
               required 
               class="form-input"
             />
@@ -30,13 +30,19 @@ const Login = {
           
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">ログイン</button>
-            <button type="button" @click="$emit('toRegister')" class="btn btn-secondary">
+            <button type="button" @click="goToRegister" class="btn btn-secondary">
               アカウント作成
             </button>
           </div>
         </form>
         
         <div v-if="error" class="error-message">{{ error }}</div>
+        
+        <div class="demo-info">
+          <p><strong>デモ用ログイン情報：</strong></p>
+          <p>ユーザー名: demo</p>
+          <p>パスワード: password</p>
+        </div>
       </div>
     </div>
   `,
@@ -57,16 +63,19 @@ const Login = {
         return;
       }
 
-      // 簡単な認証チェック（実際のアプリではAPIを使用）
+      // 簡単な認証チェック
       if (this.username === "demo" && this.password === "password") {
         this.error = "";
-        this.$emit("login", {
-          username: this.username,
-          password: this.password,
-        });
+        // ルーターを使ってダッシュボードに遷移
+        this.$router.push("/dashboard");
       } else {
         this.error = "ユーザー名またはパスワードが間違っています。";
       }
+    },
+
+    goToRegister() {
+      // ルーターを使ってアカウント作成画面に遷移
+      this.$router.push("/register");
     },
   },
 };

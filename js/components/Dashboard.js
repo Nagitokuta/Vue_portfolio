@@ -4,14 +4,17 @@ const Dashboard = {
       <div class="dashboard-header">
         <h2>オンラインポートフォリオ - ダッシュボード</h2>
         <p class="welcome-text">こんにちは、{{ username }}さん！</p>
+        <div class="nav-buttons">
+          <button @click="logout" class="btn btn-logout">ログアウト</button>
+        </div>
       </div>
       
       <div class="menu-bar">
         <button @click="activeTab = 'projects'" :class="{ active: activeTab === 'projects' }" class="tab-btn">
           プロジェクト一覧
         </button>
-        <button @click="activeTab = 'templates'" class="tab-btn">テンプレート選択</button>
-        <button @click="activeTab = 'publish'" class="tab-btn">公開・共有</button>
+        <button @click="goToTemplates" class="tab-btn">テンプレート選択</button>
+        <button @click="goToPortfolio" class="tab-btn">公開・共有</button>
       </div>
       
       <div v-if="activeTab === 'projects'" class="project-section">
@@ -32,25 +35,15 @@ const Dashboard = {
               <p class="project-period">{{ project.start }} ～ {{ project.end }}</p>
             </div>
             <div class="project-actions">
-              <button @click="$emit('editProject', project)" class="btn btn-edit">編集</button>
+              <button @click="editProject(project)" class="btn btn-edit">編集</button>
               <button @click="confirmDelete(project)" class="btn btn-delete">削除</button>
             </div>
           </div>
         </div>
         
-        <button class="add-project-btn" @click="$emit('addProject')">
+        <button class="add-project-btn" @click="addProject">
           ＋ プロジェクト追加
         </button>
-      </div>
-      
-      <div v-if="activeTab === 'templates'" class="template-section">
-        <h3>テンプレート選択</h3>
-        <p>この機能は次のステップで実装します。</p>
-      </div>
-      
-      <div v-if="activeTab === 'publish'" class="publish-section">
-        <h3>公開・共有</h3>
-        <p>この機能は次のステップで実装します。</p>
       </div>
       
       <!-- 削除確認モーダル -->
@@ -67,26 +60,46 @@ const Dashboard = {
     </div>
   `,
 
-  props: {
-    username: {
-      type: String,
-      default: "ユーザー",
-    },
-    projects: {
-      type: Array,
-      default: () => [],
-    },
-  },
-
   data() {
     return {
+      username: "demo",
       activeTab: "projects",
       showDeleteModal: false,
       deleteTarget: null,
+      projects: [
+        {
+          id: 1,
+          title: "Webサイト制作",
+          start: "2024-01-01",
+          end: "2024-03-31",
+          summary: "企業のコーポレートサイトを制作",
+          details:
+            "HTML、CSS、JavaScriptを使用してレスポンシブなWebサイトを制作しました。",
+          role: "フロントエンド開発担当",
+        },
+        {
+          id: 2,
+          title: "モバイルアプリ開発",
+          start: "2024-04-01",
+          end: "2024-06-30",
+          summary: "スマートフォン向けアプリを開発",
+          details:
+            "React Nativeを使用してクロスプラットフォームアプリを開発しました。",
+          role: "アプリ開発担当",
+        },
+      ],
     };
   },
 
   methods: {
+    addProject() {
+      this.$router.push("/project/edit");
+    },
+
+    editProject(project) {
+      this.$router.push(`/project/edit/${project.id}`);
+    },
+
     confirmDelete(project) {
       this.deleteTarget = project;
       this.showDeleteModal = true;
@@ -94,7 +107,9 @@ const Dashboard = {
 
     executeDelete() {
       if (this.deleteTarget) {
-        this.$emit("deleteProject", this.deleteTarget.id);
+        this.projects = this.projects.filter(
+          (p) => p.id !== this.deleteTarget.id
+        );
         this.cancelDelete();
       }
     },
@@ -102,6 +117,18 @@ const Dashboard = {
     cancelDelete() {
       this.showDeleteModal = false;
       this.deleteTarget = null;
+    },
+
+    goToTemplates() {
+      this.$router.push("/templates");
+    },
+
+    goToPortfolio() {
+      this.$router.push("/portfolio");
+    },
+
+    logout() {
+      this.$router.push("/login");
     },
   },
 };

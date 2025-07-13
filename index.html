@@ -3,22 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>オンラインポートフォリオ - コンポーネント版</title>
+    <title>オンラインポートフォリオ - ルーティング版</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
     <div id="app">
-      <!-- Vueアプリケーションがここに表示される -->
+      <!-- ルーターによって表示されるコンポーネントがここに表示される -->
     </div>
 
     <!-- Vue.js本体 -->
     <script src="https://unpkg.com/vue@3.4.21/dist/vue.global.js"></script>
+
+    <!-- Vue Router -->
+    <script src="https://unpkg.com/vue-router@4.2.5/dist/vue-router.global.js"></script>
 
     <!-- コンポーネントファイル -->
     <script src="js/components/Login.js"></script>
     <script src="js/components/Register.js"></script>
     <script src="js/components/Dashboard.js"></script>
     <script src="js/components/ProjectForm.js"></script>
+
+    <!-- ルーター設定 -->
+    <script src="js/router.js"></script>
 
     <!-- メインアプリケーション -->
     <script src="js/main.js"></script>

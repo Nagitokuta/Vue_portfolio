@@ -3,6 +3,7 @@ const ProjectForm = {
     <div class="project-form-container">
       <div class="form-header">
         <h2>プロジェクト{{ isEdit ? '編集' : '追加' }}</h2>
+        <button @click="goBack" class="btn btn-back">← ダッシュボードに戻る</button>
       </div>
       
       <div class="form-card">
@@ -87,7 +88,7 @@ const ProjectForm = {
           
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">保存</button>
-            <button type="button" @click="$emit('cancel')" class="btn btn-secondary">
+            <button type="button" @click="goBack" class="btn btn-secondary">
               キャンセル
             </button>
           </div>
@@ -97,13 +98,6 @@ const ProjectForm = {
       </div>
     </div>
   `,
-
-  props: {
-    project: {
-      type: Object,
-      default: null,
-    },
-  },
 
   data() {
     return {
@@ -123,18 +117,54 @@ const ProjectForm = {
 
   computed: {
     isEdit() {
-      return this.project !== null;
+      return this.$route.params.id !== undefined;
+    },
+
+    projectId() {
+      return this.$route.params.id;
     },
   },
 
   mounted() {
     if (this.isEdit) {
-      // 編集モードの場合、既存データを設定
-      this.form = { ...this.project };
+      // 編集モードの場合、プロジェクトデータを読み込み
+      this.loadProject();
     }
   },
 
   methods: {
+    loadProject() {
+      // 実際のアプリではAPIからデータを取得
+      // ここではサンプルデータを使用
+      const sampleProjects = [
+        {
+          id: 1,
+          title: "Webサイト制作",
+          start: "2024-01-01",
+          end: "2024-03-31",
+          summary: "企業のコーポレートサイトを制作",
+          details:
+            "HTML、CSS、JavaScriptを使用してレスポンシブなWebサイトを制作しました。",
+          role: "フロントエンド開発担当",
+        },
+        {
+          id: 2,
+          title: "モバイルアプリ開発",
+          start: "2024-04-01",
+          end: "2024-06-30",
+          summary: "スマートフォン向けアプリを開発",
+          details:
+            "React Nativeを使用してクロスプラットフォームアプリを開発しました。",
+          role: "アプリ開発担当",
+        },
+      ];
+
+      const project = sampleProjects.find((p) => p.id == this.projectId);
+      if (project) {
+        this.form = { ...project };
+      }
+    },
+
     onFileChange(event) {
       const file = event.target.files[0];
       if (file) {
@@ -170,13 +200,15 @@ const ProjectForm = {
 
       this.error = "";
 
-      // プロジェクトデータを親コンポーネントに送信
-      const projectData = {
-        ...this.form,
-        id: this.isEdit ? this.project.id : Date.now(), // 簡易的なID生成
-      };
+      // 実際のアプリではAPIにデータを送信
+      console.log("プロジェクトを保存:", this.form);
 
-      this.$emit("save", projectData);
+      // ダッシュボードに戻る
+      this.$router.push("/dashboard");
+    },
+
+    goBack() {
+      this.$router.push("/dashboard");
     },
   },
 };
